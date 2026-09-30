@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root{--bg:#f5f1e8;--card:#fffdf8;--ink:#0f1b3d;--mut:#6e7385;--line:#e7e0cf;--soft:#e8eefc}
+:root[data-theme='dark']{--bg:#0a1230;--card:#111c40;--ink:#e8edff;--mut:#93a0c6;--line:#1f2c57;--soft:#182757}
+@layer base{body{@apply bg-bg text-ink antialiased font-sans}}
+@layer components{
+.card{@apply rounded-2xl border border-line bg-card p-5 shadow-sm}
+.btn{@apply inline-flex items-center justify-center gap-2 rounded-xl bg-pri px-4 py-2.5 text-sm font-bold text-white transition hover:brightness-110 disabled:opacity-60}
+.btn-ghost{@apply inline-flex items-center gap-2 rounded-xl border border-line bg-card px-4 py-2.5 text-sm font-semibold hover:bg-soft}
+.input{@apply w-full rounded-xl border border-line bg-bg px-3 py-2.5 text-sm text-ink outline-none focus:border-pri focus:ring-2 focus:ring-pri/20}
+.pill{@apply whitespace-nowrap rounded-full bg-soft px-2.5 py-0.5 text-xs font-bold text-pri}
+}

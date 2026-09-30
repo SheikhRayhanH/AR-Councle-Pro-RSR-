@@ -1,0 +1,12 @@
+import { useEffect, type ReactNode } from 'react'
+import { X } from 'lucide-react'
+export default function Modal({ title, onClose, children }: { title: string; onClose: () => void; children: ReactNode }) {
+  useEffect(() => { const h = (e: KeyboardEvent) => e.key === 'Escape' && onClose(); window.addEventListener('keydown', h); return () => window.removeEventListener('keydown', h) }, [onClose])
+  return (
+    <div className="fixed inset-0 z-40 grid place-items-center bg-black/50 p-4" onMouseDown={(e) => e.target === e.currentTarget && onClose()}>
+      <div role="dialog" aria-modal="true" aria-label={title} className="card max-h-[90vh] w-full max-w-2xl overflow-y-auto">
+        <div className="mb-4 flex items-center justify-between"><h2 className="text-lg font-bold">{title}</h2><button onClick={onClose} aria-label="Close" className="rounded-lg p-1 hover:bg-soft"><X size={18} /></button></div>
+        {children}
+      </div>
+    </div>)
+}
