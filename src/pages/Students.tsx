@@ -1,8 +1,9 @@
 import { useEffect, useMemo, useState } from 'react'
-import { ArrowUpDown, ChevronLeft, ChevronRight, Pencil, Plus, Trash2, Users } from 'lucide-react'
+import { ArrowUpDown, ChevronLeft, ChevronRight, Eye, Pencil, Plus, Trash2, Users } from 'lucide-react'
 import { useStudents } from '../hooks/useStudents'
 import { useToast } from '../hooks/useToast'
-import { COUNSELORS, STATUSES } from '../data/mock'
+import { STATUSES } from '../data/mock'
+import { useTeam } from '../hooks/useTeam'
 import { useUser } from '../hooks/useAuth'
 import { seesAllStudents } from '../data/permissions'
 import type { Student, StudentInput } from '../types'
@@ -10,6 +11,7 @@ import Modal from '../components/Modal'
 import ConfirmDialog from '../components/ConfirmDialog'
 import StudentForm from '../components/StudentForm'
 import StatusPill from '../components/StatusPill'
+import StudentDrawer from '../components/StudentDrawer'
 const PER_PAGE = 5
 interface Props { query: string; openAdd: boolean; onAddHandled: () => void }
 export default function Students({ query, openAdd, onAddHandled }: Props) {
@@ -18,12 +20,14 @@ export default function Students({ query, openAdd, onAddHandled }: Props) {
   const isAdmin = seesAllStudents(user.role)
   const students = useMemo(() => (isAdmin ? all : all.filter((s) => s.counselor === user.name)), [all, isAdmin, user.name])
   const toast = useToast()
+  const { counselors } = useTeam()
   const [status, setStatus] = useState('')
   const [co, setCo] = useState('')
   const [asc, setAsc] = useState(true)
   const [pg, setPg] = useState(1)
   const [editing, setEditing] = useState<Student | 'new' | null>(null)
   const [del, setDel] = useState<Student | null>(null)
+  const [viewing, setViewing] = useState<Student | null>(null)
   useEffect(() => { if (openAdd) { setEditing('new'); onAddHandled() } }, [openAdd, onAddHandled])
   useEffect(() => { setPg(1) }, [query, status, co])
   const rows = useMemo(() => {
@@ -46,7 +50,7 @@ export default function Students({ query, openAdd, onAddHandled }: Props) {
       </div>
       <div className="mb-4 flex flex-wrap gap-2">
         <select className="input !w-auto" value={status} onChange={(e) => setStatus(e.target.value)} aria-label="Filter by status"><option value="">All statuses</option>{STATUSES.map((s) => <option key={s}>{s}</option>)}</select>
-        <select className="input !w-auto" hidden={!isAdmin} value={co} onChange={(e) => setCo(e.target.value)} aria-label="Filter by counselor"><option value="">All counselors</option>{COUNSELORS.map((c) => <option key={c}>{c}</option>)}</select>
+        <select className="input !w-auto" hidden={!isAdmin} value={co} onChange={(e) => setCo(e.target.value)} aria-label="Filter by counselor"><option value="">All counselors</option>{counselors.map((c) => <option key={c}>{c}</option>)}</select>
         <button className="btn-ghost" onClick={() => setAsc(!asc)}><ArrowUpDown size={16} />Name {asc ? 'A-Z' : 'Z-A'}</button>
       </div>
       <div className="card overflow-x-auto !p-0">
@@ -63,6 +67,7 @@ export default function Students({ query, openAdd, onAddHandled }: Props) {
                 <td className="px-4 py-3">{s.ielts.toFixed(1)}</td>
                 <td className="px-4 py-3"><StatusPill status={s.status} /></td>
                 <td className="px-4 py-3"><div className="flex gap-1">
+                  <button aria-label={`View ${s.name}`} className="rounded-lg p-2 hover:bg-card" onClick={() => setViewing(s)}><Eye size={15} /></button>
                   <button aria-label={`Edit ${s.name}`} className="rounded-lg p-2 hover:bg-card" onClick={() => setEditing(s)}><Pencil size={15} /></button>
                   <button aria-label={`Delete ${s.name}`} className="rounded-lg p-2 text-red-600 hover:bg-card" onClick={() => setDel(s)}><Trash2 size={15} /></button></div></td>
               </tr>))}
@@ -75,6 +80,7 @@ export default function Students({ query, openAdd, onAddHandled }: Props) {
         <span className="text-mut">Page {pg} of {pages}</span>
         <button className="btn-ghost !px-2.5" disabled={pg >= pages} onClick={() => setPg(pg + 1)} aria-label="Next page"><ChevronRight size={16} /></button>
       </div>
+      {viewing && <StudentDrawer s={viewing} onClose={() => setViewing(null)} onEdit={() => { setEditing(viewing); setViewing(null) }} />}
       {editing && <Modal title={editing === 'new' ? 'Add Student' : 'Edit Student'} onClose={() => setEditing(null)}><StudentForm initial={editing === 'new' ? undefined : editing} onSave={save} onCancel={() => setEditing(null)} /></Modal>}
       {del && <ConfirmDialog title="Delete student?" message={`${del.name} will be permanently removed. This cannot be undone.`} confirmLabel="Delete" onClose={() => setDel(null)} onConfirm={async () => { await remove(del.id); toast('Student deleted'); setDel(null) }} />}
     </div>)

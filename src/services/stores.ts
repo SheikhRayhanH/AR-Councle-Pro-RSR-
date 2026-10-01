@@ -1,5 +1,5 @@
-import type { Application, University } from '../types'
-import { APPLICATIONS, UNIVERSITIES } from '../data/mock'
+import type { Application, Task, TeamMember, University } from '../types'
+import { APPLICATIONS, TASKS, TEAM, UNIVERSITIES } from '../data/mock'
 // Generic in-memory store. Replace with real API calls later.
 function makeStore<T extends { id: string }>(seed: T[]) {
   let db = [...seed]
@@ -12,3 +12,5 @@ function makeStore<T extends { id: string }>(seed: T[]) {
 }
 export const universityStore = makeStore<University>(UNIVERSITIES)
 export const applicationStore = makeStore<Application>(APPLICATIONS)
+export const teamStore = makeStore<TeamMember>(TEAM)
+export const taskStore = makeStore<Task>(TASKS)

@@ -12,3 +12,5 @@ export interface User { name: string; role: Role }
 export interface Payment { id: string; student: string; purpose: string; method: string; amount: number; status: 'Paid' | 'Pending'; date: string; reference?: string }
 export interface University { id: string; name: string; country: string; city: string; ranking: number; tuition: string; deadline: string; ielts: number; programs: string; status: 'Open' | 'Closed' }
 export interface Application { id: string; student: string; university: string; country: string; program: string; intake: string; date: string; status: ApplicationStatus }
+export interface TeamMember { id: string; name: string; email: string; role: Role; status: 'Active' | 'Disabled'; joined: string }
+export interface Task { id: string; title: string; due: string; priority: 'High' | 'Medium' | 'Low'; assignee: string; student?: string; done: boolean }

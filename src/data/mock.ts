@@ -1,4 +1,4 @@
-import type { Application, ApplicationStatus, Role, Student, University, User } from '../types'
+import type { Application, ApplicationStatus, Role, Student, Task, TeamMember, University, User } from '../types'
 export const COUNSELORS = ['Farhana Akter', 'Imran Hossain', 'Sabina Yasmin', 'Kamrul Hasan']
 export const STATUSES: ApplicationStatus[] = ['Draft', 'Applied', 'Submitted', 'In Process', 'Offer Received', 'Visa Processing', 'Visa Approved', 'Rejected']
 const row = (i: number, name: string, c: number, country: string, ssc: number, hsc: number, bachelor: number, subject: string, ielts: number, status: ApplicationStatus, addedAt: string): Student => ({
@@ -35,4 +35,17 @@ export const APPLICATIONS: Application[] = [
   app(4, 'Mehedi Hasan', 'University of Toronto', 'Canada', 'MBA', 'Visa Approved', '2026-08-22'),
   app(5, 'Sadia Afrin', 'Arizona State University', 'USA', 'MS Pharmaceutical Science', 'Draft', '2026-09-28'),
   app(6, 'Arif Chowdhury', 'University of Manchester', 'UK', 'MSc Computer Science', 'Applied', '2026-09-26'),
+]
+const tm = (i: number, name: string, role: Role, email: string): TeamMember => ({ id: `t${i}`, name, email, role, status: 'Active', joined: '2026-01-10' })
+export const TEAM: TeamMember[] = [
+  tm(1, 'Md. Rayhan Sheikh Rahat', 'admin', 'admin@example.com'), tm(2, 'Nadia Karim', 'admission', 'nadia@example.com'),
+  ...COUNSELORS.map((n, i) => tm(3 + i, n, 'counselor', `${n.split(' ')[0].toLowerCase()}@example.com`)),
+]
+const day = (n: number) => { const x = new Date(); x.setDate(x.getDate() + n); return x.toISOString().slice(0, 10) }
+const task = (i: number, title: string, due: number, priority: Task['priority'], assignee: string, student?: string, done = false): Task => ({ id: `k${i}`, title, due: day(due), priority, assignee, student, done })
+export const TASKS: Task[] = [
+  task(1, 'Follow up with student', 0, 'High', COUNSELORS[0], 'Tanvir Ahmed'), task(2, 'Submit application', 0, 'High', COUNSELORS[1], 'Nusrat Jahan'),
+  task(3, 'Check offer letter', 1, 'Medium', COUNSELORS[0], 'Rafiul Islam'), task(4, 'Collect visa documents', 3, 'Medium', COUNSELORS[2], 'Mehedi Hasan'),
+  task(5, 'University deadline: Toronto', 5, 'High', 'Md. Rayhan Sheikh Rahat'), task(6, 'Counseling session', -2, 'Low', COUNSELORS[3], 'Sadia Afrin'),
+  task(7, 'Send IELTS reminder', -1, 'Medium', COUNSELORS[2], 'Arif Chowdhury', true),
 ]

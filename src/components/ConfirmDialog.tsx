@@ -6,6 +6,6 @@ export default function ConfirmDialog({ title, message, confirmLabel, onConfirm,
   const go = async () => { setBusy(true); await onConfirm(); setBusy(false) }
   return (<Modal title={title} onClose={onClose}>
     <p className="text-sm text-mut">{message}</p>
-    <div className="mt-5 flex justify-end gap-2"><button className="btn-ghost" onClick={onClose}>Cancel</button><button className="btn !bg-red-600" disabled={busy} onClick={go}>{busy ? 'Deleting...' : confirmLabel}</button></div>
+    <div className="mt-5 flex justify-end gap-2"><button className="btn-ghost" onClick={onClose}>Cancel</button><button className="btn !bg-red-600" disabled={busy} onClick={go}>{busy ? 'Please wait...' : confirmLabel}</button></div>
   </Modal>)
 }

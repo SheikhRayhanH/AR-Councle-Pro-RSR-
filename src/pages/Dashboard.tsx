@@ -3,15 +3,15 @@ import { Area, AreaChart, CartesianGrid, Cell, Pie, PieChart, ResponsiveContaine
 import { BarChart3, BookOpen, Building2, CheckCircle2, FileText, Globe, GraduationCap, Hourglass, Plane, Sparkles, UserPlus, Users } from 'lucide-react'
 import { useStudents } from '../hooks/useStudents'
 import { useUser } from '../hooks/useAuth'
-import { seesAllStudents } from '../data/permissions'
+import { canView, seesAllStudents } from '../data/permissions'
 import { useToast } from '../hooks/useToast'
 import { ACTIVITIES, BASE, COUNTRIES, TREND } from '../data/mock'
 import { AGENCY } from '../data/agency'
-import type { ApplicationStatus } from '../types'
+import type { ApplicationStatus, Page } from '../types'
 import KpiCard from '../components/KpiCard'
 import ContactForm from '../components/ContactForm'
 import WeAccept from '../components/WeAccept'
-export default function Dashboard({ onAddStudent }: { onAddStudent: () => void }) {
+export default function Dashboard({ onAddStudent, onGo }: { onAddStudent: () => void; onGo: (p: Page) => void }) {
   const { students: all } = useStudents()
   const user = useUser()
   const isAdmin = seesAllStudents(user.role)
@@ -22,8 +22,9 @@ export default function Dashboard({ onAddStudent }: { onAddStudent: () => void }
     const n = (...s: ApplicationStatus[]) => students.filter((x) => s.includes(x.status)).length
     return { total: B.students + students.length, apps: B.apps + students.filter((x) => x.status !== 'Draft').length, offers: B.offers + n('Offer Received'), visa: B.visa + n('Visa Approved'), pending: B.pending + n('Applied', 'Submitted', 'In Process') }
   }, [students])
+  const go = (p: Page) => (canView(user.role, p) ? onGo(p) : toast('Your role cannot open that page', 'err'))
   const soon = (t: string) => toast(`${t} is coming in the next step`)
-  const actions = [{ l: 'Add New Student', i: UserPlus, f: onAddStudent }, { l: 'Add Application', i: FileText, f: () => soon('Applications') }, { l: 'Add University', i: Building2, f: () => soon('Universities') }, { l: 'Generate Report', i: BarChart3, f: () => soon('Reports') }]
+  const actions = [{ l: 'Add New Student', i: UserPlus, f: onAddStudent }, { l: 'Add Application', i: FileText, f: () => go('applications') }, { l: 'Add University', i: Building2, f: () => go('universities') }, { l: 'Generate Report', i: BarChart3, f: () => go('reports') }]
   return (
     <div className="space-y-4">
       <section className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-navy to-[#14307e] p-6 text-white shadow-lg sm:p-8">

@@ -6,7 +6,7 @@ import { canView, ROLE_LABEL } from '../data/permissions'
 export const NAV: { id: Page; label: string; icon: LucideIcon; adminOnly?: boolean }[] = [
   { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard }, { id: 'students', label: 'Students', icon: Users },
   { id: 'applications', label: 'Applications', icon: FileText }, { id: 'universities', label: 'Universities', icon: Building2 },
-  { id: 'counselors', label: 'Counselors', icon: UserCog }, { id: 'payments', label: 'Payments', icon: CreditCard, adminOnly: true }, { id: 'tasks', label: 'Tasks & Reminders', icon: ListChecks },
+  { id: 'counselors', label: 'Team', icon: UserCog }, { id: 'payments', label: 'Payments', icon: CreditCard, adminOnly: true }, { id: 'tasks', label: 'Tasks & Reminders', icon: ListChecks },
   { id: 'reports', label: 'Reports', icon: BarChart3 }, { id: 'settings', label: 'Settings', icon: Settings },
 ]
 interface Props { page: Page; open: boolean; onNavigate: (p: Page) => void; onClose: () => void }
@@ -14,7 +14,7 @@ export default function Sidebar({ page, open, onNavigate, onClose }: Props) {
   const user = useUser()
   return (<>
     {open && <div className="fixed inset-0 z-20 bg-black/50 lg:hidden" onClick={onClose} />}
-    <aside className={`fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-navy p-4 text-[#b7c4ee] transition-transform lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
+    <aside className={`print:hidden fixed inset-y-0 left-0 z-30 flex w-64 flex-col bg-navy p-4 text-[#b7c4ee] transition-transform lg:translate-x-0 ${open ? 'translate-x-0' : '-translate-x-full'}`}>
       <div className="flex items-center gap-3 px-2 pb-6">
         <div className="grid h-10 w-10 place-items-center rounded-xl bg-gradient-to-br from-blue-500 to-pri text-white"><GraduationCap size={20} /></div>
         <div><b className="block text-white">{AGENCY.name}</b><small className="text-xs text-[#8fa3de]">{AGENCY.tagline}</small></div>
